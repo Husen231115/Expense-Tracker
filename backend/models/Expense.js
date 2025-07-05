@@ -6,6 +6,11 @@ const ExpenseSchema = new mongoose.Schema({
     category:{type:String , required:true},
     amount:{type:Number  , required:true},
     date:{type:Date, default:Date.now},
+    description:{type:String},
+    tags:[{type:String}],
+    isRecurring:{type:Boolean, default:false},
+    recurringFrequency:{type:String, enum:['daily', 'weekly', 'monthly', 'yearly']},
+    attachments:[{type:String}],
 },
 {timestamps:true});
 
