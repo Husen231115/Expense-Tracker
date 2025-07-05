@@ -1,0 +1,72 @@
+version: '3.8'
+
+services:
+  # MongoDB Database
+  mongodb:
+    image: mongo:7.0
+    container_name: expense-tracker-mongo
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: password123
+      MONGO_INITDB_DATABASE: expense-tracker
+    volumes:
+      - mongodb_data:/data/db
+      - ./mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+    networks:
+      - expense-tracker-network
+
+  # Backend API
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: expense-tracker-backend
+    restart: unless-stopped
+    ports:
+      - "5001:5001"
+    environment:
+      - NODE_ENV=development
+      - PORT=5001
+      - MONGO_URI=mongodb://admin:password123@mongodb:27017/expense-tracker?authSource=admin
+      - JWT_SECRET=your-super-secret-jwt-key-change-this-in-production-2024
+      - CLIENT_URL=http://localhost:5173
+    depends_on:
+      - mongodb
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+      - ./backend/uploads:/app/uploads
+    networks:
+      - expense-tracker-network
+    command: npm run dev
+
+  # Frontend Application
+  frontend:
+    build:
+      context: ./frontend/expense-tracker
+      dockerfile: Dockerfile
+    container_name: expense-tracker-frontend
+    restart: unless-stopped
+    ports:
+      - "5173:5173"
+    environment:
+      - VITE_API_URL=http://localhost:5001/api/v1
+      - VITE_SERVER_URL=http://localhost:5001
+    depends_on:
+      - backend
+    volumes:
+      - ./frontend/expense-tracker:/app
+      - /app/node_modules
+    networks:
+      - expense-tracker-network
+    command: npm run dev
+
+volumes:
+  mongodb_data:
+
+networks:
+  expense-tracker-network:
+    driver: bridge

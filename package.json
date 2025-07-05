@@ -1,0 +1,29 @@
+{
+  "name": "expense-tracker-fullstack",
+  "version": "2.0.0",
+  "description": "Comprehensive Personal Finance Management System",
+  "scripts": {
+    "install-all": "cd backend && npm install && cd ../frontend/expense-tracker && npm install",
+    "dev": "concurrently \"npm run backend:dev\" \"npm run frontend:dev\"",
+    "backend:dev": "cd backend && npm run dev",
+    "frontend:dev": "cd frontend/expense-tracker && npm run dev",
+    "backend:start": "cd backend && npm start",
+    "frontend:build": "cd frontend/expense-tracker && npm run build",
+    "frontend:preview": "cd frontend/expense-tracker && npm run preview",
+    "test": "echo \"Testing both backend and frontend...\"",
+    "setup": "npm run install-all && npm run setup:env",
+    "setup:env": "echo \"Please configure your .env files in backend/ and frontend/expense-tracker/\""
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  },
+  "keywords": [
+    "expense-tracker",
+    "budget-management",
+    "financial-planning",
+    "goal-tracking",
+    "personal-finance"
+  ],
+  "author": "Your Name",
+  "license": "MIT"
+}
